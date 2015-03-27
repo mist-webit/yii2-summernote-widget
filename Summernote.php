@@ -22,6 +22,8 @@ class Summernote extends InputWidget
     public $options = [];
     /** @var array */
     public $clientOptions = [];
+    /** @var array */
+    public $plugins = [];
 
     /**
      * @inheritdoc
@@ -61,6 +63,10 @@ class Summernote extends InputWidget
 
         if ($language = ArrayHelper::getValue($this->clientOptions, 'lang', null)) {
             SummernoteLanguageAsset::register($view)->language = $language;
+        }
+        
+        if (!empty($this->plugins) && is_array($this->plugins)) {
+            SummernotePluginAsset::register($view)->plugins = $this->plugins;
         }
     }
 }
