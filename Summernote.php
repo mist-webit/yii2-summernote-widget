@@ -65,7 +65,7 @@ class Summernote extends InputWidget
             SummernoteLanguageAsset::register($view)->language = $language;
         }
         
-        if (count($this->plugins)) {
+        if (!empty($this->plugins) && is_array($this->plugins)) {
             SummernotePluginAsset::register($view)->plugins = $this->plugins;
         }
     }
