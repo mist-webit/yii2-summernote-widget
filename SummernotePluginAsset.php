@@ -7,7 +7,7 @@ use yii\web\AssetBundle;
 class SummernotePluginAsset extends AssetBundle
 {
     /** @var array */
-    public $plugins;
+    public $plugins = [];
     /** @var string */
     public $sourcePath = '@bower/summernote/plugin';
     /** @var array */
