@@ -46,7 +46,6 @@ class Summernote extends InputWidget
         $this->registerAssets();
 
 		
-		$tag = 
 		if($this->hasModel()){
 			$tag = Html::activeTextarea($this->model, $this->attribute, $this->options);
 		} else {
