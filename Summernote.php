@@ -51,7 +51,7 @@ class Summernote extends InputWidget
 		} else {
 			$tag = $this->useTextarea
             ? Html::textarea($this->name, $this->value, $this->options)
-            : $tag;
+            : Html::tag('div', $this->value, $this->options);
 		}
 		echo $tag;
 		
