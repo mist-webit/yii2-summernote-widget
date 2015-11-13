@@ -24,6 +24,9 @@ class Summernote extends InputWidget
     public $clientOptions = [];
     /** @var array */
     public $plugins = [];
+	
+	/** @var boolean */
+	public $useTextarea = true;
 
     /**
      * @inheritdoc
@@ -42,9 +45,17 @@ class Summernote extends InputWidget
     {
         $this->registerAssets();
 
-        echo $this->hasModel()
-            ? Html::activeTextarea($this->model, $this->attribute, $this->options)
-            : Html::textarea($this->name, $this->value, $this->options);
+		
+		$tag = 
+		if($this->hasModel()){
+			$tag = Html::activeTextarea($this->model, $this->attribute, $this->options);
+		} else {
+			$tag = $this->useTextarea
+            ? Html::textarea($this->name, $this->value, $this->options)
+            : $tag;
+		}
+		echo $tag;
+		
         $clientOptions = empty($this->clientOptions)
             ? null
             : Json::encode($this->clientOptions);
