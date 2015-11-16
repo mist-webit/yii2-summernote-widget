@@ -72,7 +72,7 @@ class Summernote extends InputWidget
             $view->registerJs('jQuery( "#' . $this->options['id'] . '" ).summernote(' . $clientOptions . ');');
         } else {
             $jsFuncName = ucfirst(str_replace(['-', '_', ' '], '', $this->options['id']));
-            $view->registerJs('editSummernote' . $jsFuncName . '( "#' . $this->options['id'] . '" ).summernote(' . $clientOptions . ');', \yii\web\View::POS_END);
+            $view->registerJs('editSummernote' . $jsFuncName . '$( "#' . $this->options['id'] . '" ).summernote(' . $clientOptions . ');', \yii\web\View::POS_END);
 
             $ajaxSave = isset($this->saveUrl) ? '$.ajax({'
                 . 'url: "' . $this->saveUrl . '",'
