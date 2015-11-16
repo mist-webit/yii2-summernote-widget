@@ -11,6 +11,7 @@ class Summernote extends InputWidget
 {
     /** @var array */
     private $defaultOptions = ['class' => 'form-control'];
+
     /** @var array */
     private $defaultClientOptions = [
         'height' => 200,
@@ -18,15 +19,24 @@ class Summernote extends InputWidget
             'theme' => 'monokai'
         ]
     ];
+
     /** @var array */
     public $options = [];
+
     /** @var array */
     public $clientOptions = [];
+
     /** @var array */
     public $plugins = [];
-	
-	/** @var boolean */
-	public $useTextarea = true;
+
+    /** @var boolean */
+    public $useTextarea = true;
+
+    /** @var boolean */
+    public $loadSummernote = true;
+
+    /** @var string */
+    public $saveUrl = null;
 
     /**
      * @inheritdoc
@@ -44,21 +54,43 @@ class Summernote extends InputWidget
     public function run()
     {
         $this->registerAssets();
+        
+        /* @var $this yii\web\View */
+        $view = $this->getView();
+        
 
-		
-		if($this->hasModel()){
-			$tag = Html::activeTextarea($this->model, $this->attribute, $this->options);
-		} else {
-			$tag = $this->useTextarea
-            ? Html::textarea($this->name, $this->value, $this->options)
-            : Html::tag('div', $this->value, $this->options);
-		}
-		echo $tag;
-		
-        $clientOptions = empty($this->clientOptions)
-            ? null
-            : Json::encode($this->clientOptions);
-        $this->getView()->registerJs('jQuery( "#' . $this->options['id'] . '" ).summernote(' . $clientOptions . ');');
+        if ($this->hasModel()) {
+            $tag = Html::activeTextarea($this->model, $this->attribute, $this->options);
+        } else {
+            $tag = $this->useTextarea ? Html::textarea($this->name, $this->value, $this->options) : Html::tag('div', $this->value, $this->options);
+        }
+        echo $tag;
+
+        $clientOptions = empty($this->clientOptions) ? null : Json::encode($this->clientOptions);
+
+        if ($this->loadSummernote) {
+            $view->registerJs('jQuery( "#' . $this->options['id'] . '" ).summernote(' . $clientOptions . ');');
+        } else {
+            $jsFuncName = ucfirst(str_replace(['-', '_', ' '], '', $this->options['id']));
+            $view->registerJs('editSummernote' . $jsFuncName . '( "#' . $this->options['id'] . '" ).summernote(' . $clientOptions . ');', \yii\web\View::POS_END);
+
+            $ajaxSave = isset($this->saveUrl) ? '$.ajax({'
+                . 'url: "' . $this->saveUrl . '",'
+                . 'data: {id: "", data: $("#' . $this->options['id'] . '").code()},'
+                . 'success: function(data){'
+                . '$("#' . $this->options['id'] . '" ).summernote().destroy()'
+                . '},'
+                . 'error: function(xhr){'
+                . 'alert("Error: " + xhr.status + " " + xhr.statusText);'
+                . '}'
+                . '});' : '';
+
+
+
+            $view->registerJs('saveSummernote' . $jsFuncName . '('
+                . $ajaxSave
+                . '$"#' . $this->options['id'] . '" ).summernote().destroy();', \yii\web\View::POS_END);
+        }
     }
 
     private function registerAssets()
@@ -74,9 +106,10 @@ class Summernote extends InputWidget
         if ($language = ArrayHelper::getValue($this->clientOptions, 'lang', null)) {
             SummernoteLanguageAsset::register($view)->language = $language;
         }
-        
+
         if (!empty($this->plugins) && is_array($this->plugins)) {
             SummernotePluginAsset::register($view)->plugins = $this->plugins;
         }
     }
+
 }
