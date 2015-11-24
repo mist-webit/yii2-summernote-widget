@@ -85,7 +85,7 @@ JS;
                 . 'method: "POST",'
                 . 'data: {id: "", data: $("#' . $this->options['id'] . '").code()},'
                 . 'success: function(data){'
-                . '$("#' . $this->options['id'] . '" ).summernote().destroy()'
+                . '$("#' . $this->options['id'] . '" ).summernote().destroy();'
                 . '},'
                 . 'error: function(xhr){'
                 . 'alert("Error: " + xhr.status + " " + xhr.statusText);'
