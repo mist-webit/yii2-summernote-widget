@@ -82,6 +82,7 @@ JS;
 
             $ajaxSave = isset($this->saveUrl) ? '$.ajax({'
                 . 'url: "' . $this->saveUrl . '",'
+                . 'method: "POST",'
                 . 'data: {id: "", data: $("#' . $this->options['id'] . '").code()},'
                 . 'success: function(data){'
                 . '$("#' . $this->options['id'] . '" ).summernote().destroy()'
