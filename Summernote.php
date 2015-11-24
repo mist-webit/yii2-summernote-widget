@@ -72,7 +72,17 @@ class Summernote extends InputWidget
             $view->registerJs('jQuery( "#' . $this->options['id'] . '" ).summernote(' . $clientOptions . ');');
         } else {
             $jsFuncName = ucfirst(str_replace(['-', '_', ' '], '', $this->options['id']));
-            $view->registerJs('editSummernote' . $jsFuncName . '$( "#' . $this->options['id'] . '" ).summernote(' . $clientOptions . ');', \yii\web\View::POS_END);
+$scriptEdit = <<< JS
+    var editSummerNote{$jsFuncName} = function(){{
+        $('#{$this->options['id']}').summernote({$clientOptions});
+    };
+JS;
+$scriptSave = <<< JS
+    var editSummerNote{$jsFuncName} = function(){{
+        $('#{$this->options['id']}').summernote({$clientOptions});
+    };
+JS;
+            $view->registerJs($scriptEdit, \yii\web\View::POS_END);
 
             $ajaxSave = isset($this->saveUrl) ? '$.ajax({'
                 . 'url: "' . $this->saveUrl . '",'
@@ -85,11 +95,15 @@ class Summernote extends InputWidget
                 . '}'
                 . '});' : '';
 
+$scriptEdit = <<< JS
+    var saveSummerNote{$jsFuncName} = function(){{
+        {$ajaxSave}
+        $('#{$this->options['id']}').summernote().destroy();
+    };
+JS;
 
 
-            $view->registerJs('saveSummernote' . $jsFuncName . '('
-                . $ajaxSave
-                . '$"#' . $this->options['id'] . '" ).summernote().destroy();', \yii\web\View::POS_END);
+            $view->registerJs($scriptSave, \yii\web\View::POS_END);
         }
     }
 
