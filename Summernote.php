@@ -54,10 +54,10 @@ class Summernote extends InputWidget
     public function run()
     {
         $this->registerAssets();
-        
+
         /* @var $this yii\web\View */
         $view = $this->getView();
-        
+
 
         if ($this->hasModel()) {
             $tag = Html::activeTextarea($this->model, $this->attribute, $this->options);
@@ -72,13 +72,9 @@ class Summernote extends InputWidget
             $view->registerJs('jQuery( "#' . $this->options['id'] . '" ).summernote(' . $clientOptions . ');');
         } else {
             $jsFuncName = ucfirst(str_replace(['-', '_', ' '], '', $this->options['id']));
-$scriptEdit = <<< JS
-    var editSummerNote{$jsFuncName} = function(){{
-        $('#{$this->options['id']}').summernote({$clientOptions});
-    };
-JS;
-$scriptSave = <<< JS
-    var editSummerNote{$jsFuncName} = function(){{
+
+            $scriptEdit = <<< JS
+    var editSummerNote{$jsFuncName} = function(){
         $('#{$this->options['id']}').summernote({$clientOptions});
     };
 JS;
@@ -95,14 +91,12 @@ JS;
                 . '}'
                 . '});' : '';
 
-$scriptEdit = <<< JS
-    var saveSummerNote{$jsFuncName} = function(){{
+            $scriptSave = <<< JS
+    var saveSummerNote{$jsFuncName} = function(){
         {$ajaxSave}
         $('#{$this->options['id']}').summernote().destroy();
     };
 JS;
-
-
             $view->registerJs($scriptSave, \yii\web\View::POS_END);
         }
     }
